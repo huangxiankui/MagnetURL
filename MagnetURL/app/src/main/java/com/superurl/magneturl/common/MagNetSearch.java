@@ -23,14 +23,14 @@ public class MagNetSearch implements ISearch {
     public List<MagnetUrl> getSearch(String content) {
         List<MagnetUrl> list = null;
         mList = new ArrayList<MagnetUrl>();
-        for (int i = 0; i < this.pagenum; i++) {
+        for (int i = 1; i < this.pagenum; i++) {
             list = getSearch(content, i);
             if (!list.isEmpty() && list.size() != 0) {
                 mList.add(list.get(i));
             }
         }
 
-        return null;
+        return mList;
     }
 
     public List<MagnetUrl> getSearch(String content, int pagenum) {
@@ -49,7 +49,6 @@ public class MagNetSearch implements ISearch {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            String title = doc.title();
             Elements urls = doc.select("div.search-item");
             if (urls.isEmpty()) {
                 //null
@@ -67,8 +66,9 @@ public class MagNetSearch implements ISearch {
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            return null;
         }
-        return null;
+
     }
 
 }

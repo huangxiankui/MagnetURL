@@ -1,6 +1,7 @@
 package com.superurl.magneturl.ui;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.superurl.magneturl.R;
 import com.superurl.magneturl.common.MagnetUrl;
+import com.superurl.magneturl.utils.Constant;
 import com.superurl.magneturl.view.CiliButton;
 
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ public class ResultShowAdapter extends BaseAdapter implements View.OnClickListen
 
     @Override
     public int getCount() {
+        Log.d(Constant.TAG,"mList.size:"+mList.size());
         return mList.size();
     }
 
@@ -47,8 +50,8 @@ public class ResultShowAdapter extends BaseAdapter implements View.OnClickListen
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = null;
-        ViewHolder viewHolder = null;
+        View view = convertView;
+        ViewHolder viewHolder;
         if (convertView == null) {
             view = LayoutInflater.from(mContext).inflate(R.layout.listview_row_item, parent, false);
             viewHolder = new ViewHolder();

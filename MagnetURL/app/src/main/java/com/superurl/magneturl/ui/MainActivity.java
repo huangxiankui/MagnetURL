@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ToastUtil.showToast(mContext, "请输入搜索内容！");
                     break;
                 }
-                Intent intent  = new Intent(this,ResultShow.class);
+                Intent intent  = new Intent(this,ResultShowActivity.class);
                 intent.putExtra("content",content);
                 startActivity(intent);
 

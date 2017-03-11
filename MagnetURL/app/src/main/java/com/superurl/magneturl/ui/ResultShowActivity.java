@@ -3,38 +3,46 @@ package com.superurl.magneturl.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 
 import com.superurl.magneturl.R;
 import com.superurl.magneturl.common.AsyncResponse;
 import com.superurl.magneturl.common.MagnetUrl;
 import com.superurl.magneturl.common.SearchTask;
+import com.superurl.magneturl.utils.Constant;
+import com.superurl.magneturl.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class ResultShow extends Activity implements AsyncResponse {
+public class ResultShowActivity extends Activity implements AsyncResponse {
     private ListView mListView = null;
     private String content = null;
     private ResultShowAdapter mAdapter;
-    private List<MagnetUrl> Mmagneturls=new ArrayList<MagnetUrl>();
+    private List<MagnetUrl> Mmagneturls = new ArrayList<MagnetUrl>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resultshow);
-        initView();
-        initData(content);
+        initData();
+        initUiResource();
+        initList(content);
     }
 
-    private void initView() {
-
+    private void initData() {
         Intent intent = getIntent();
-        String content = intent.getStringExtra("content");
+        this.content = intent.getStringExtra("content");
+        ToastUtil.showToast(getApplicationContext(),"正在玩命搜索中。。。");
     }
 
-    private void initData(String key) {
+    public void initUiResource() {
+        this.mListView = (ListView) findViewById(R.id.show_list);
+    }
+
+    private void initList(String key) {
         //异步执行
         SearchTask searchtask = new SearchTask();
         searchtask.setOnAsyncResponse(this);
@@ -43,16 +51,16 @@ public class ResultShow extends Activity implements AsyncResponse {
 
     @Override
     public void onDataReceivedSuccess(List<MagnetUrl> magneturl) {
-        if(magneturl!=null){
-            for(int i=0;i<magneturl.size();i++){
-                if(magneturl.get(i)!=null){
+        Log.d(Constant.TAG,"onDataReceivedSucess!");
+        if (magneturl != null) {
+            Log.d(Constant.TAG,"magneturl.size()"+magneturl.size());
+            for (int i = 0; i < magneturl.size(); i++) {
+                if (magneturl.get(i) != null) {
                     this.Mmagneturls.add(magneturl.get(i));
                 }
 
             }
-            //load adapter
-
-            this.mAdapter=new ResultShowAdapter();
+            this.mAdapter = new ResultShowAdapter();
             this.mAdapter.setContext(getBaseContext());
             this.mAdapter.addMsgNetList(this.Mmagneturls);
             this.mListView.setAdapter(this.mAdapter);
@@ -62,6 +70,8 @@ public class ResultShow extends Activity implements AsyncResponse {
 
     @Override
     public void onDataReceivedFailed() {
+        Log.d(Constant.TAG,"onDataReceivedFailed!");
+        ToastUtil.showToast(getApplicationContext(), "搜索失败啦！");
 
     }
 }
