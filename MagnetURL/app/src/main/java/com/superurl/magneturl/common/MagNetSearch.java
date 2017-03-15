@@ -1,6 +1,8 @@
 package com.superurl.magneturl.common;
 
 
+import android.util.Log;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -27,7 +29,6 @@ public class MagNetSearch implements ISearch {
                 mList.add(list.get(i));
             }
         }
-
         return mList;
     }
 
@@ -48,7 +49,7 @@ public class MagNetSearch implements ISearch {
                 e.printStackTrace();
             }
             Elements urls = doc.select("div.search-item");
-            if (urls.isEmpty()) {
+            if (urls.isEmpty() == true) {
                 //null
             }
             for (Element url : urls) {
