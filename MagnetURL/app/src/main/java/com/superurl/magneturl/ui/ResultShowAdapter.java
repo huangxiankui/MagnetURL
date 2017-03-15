@@ -23,7 +23,6 @@ public class ResultShowAdapter extends BaseAdapter implements View.OnClickListen
 
     public void setContext(Context context) {
         this.mContext = context;
-
     }
 
     public void addMsgNetList(List<MagnetUrl> msgurl) {
@@ -34,7 +33,6 @@ public class ResultShowAdapter extends BaseAdapter implements View.OnClickListen
 
     @Override
     public int getCount() {
-        Log.d(Constant.TAG,"mList.size:"+mList.size());
         return mList.size();
     }
 

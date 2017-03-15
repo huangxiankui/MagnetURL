@@ -2,6 +2,8 @@ package com.superurl.magneturl.common;
 
 import android.os.AsyncTask;
 
+import com.superurl.magneturl.utils.CommonUtils;
+
 import java.util.List;
 
 public class SearchTask extends AsyncTask<String,Void,List<MagnetUrl>>{

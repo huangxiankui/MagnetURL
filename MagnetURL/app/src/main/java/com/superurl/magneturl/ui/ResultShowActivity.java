@@ -10,6 +10,7 @@ import com.superurl.magneturl.R;
 import com.superurl.magneturl.common.AsyncResponse;
 import com.superurl.magneturl.common.MagnetUrl;
 import com.superurl.magneturl.common.SearchTask;
+import com.superurl.magneturl.utils.CommonUtils;
 import com.superurl.magneturl.utils.Constant;
 import com.superurl.magneturl.utils.ToastUtil;
 
@@ -35,7 +36,7 @@ public class ResultShowActivity extends Activity implements AsyncResponse {
     private void initData() {
         Intent intent = getIntent();
         this.content = intent.getStringExtra("content");
-        ToastUtil.showToast(getApplicationContext(),"正在玩命搜索中。。。");
+        ToastUtil.showToast(getApplicationContext(), "正在玩命搜索中。。。");
     }
 
     public void initUiResource() {
@@ -43,17 +44,20 @@ public class ResultShowActivity extends Activity implements AsyncResponse {
     }
 
     private void initList(String key) {
-        //异步执行
-        SearchTask searchtask = new SearchTask();
-        searchtask.setOnAsyncResponse(this);
-        searchtask.execute(content);
+        if (!CommonUtils.isNetworkAvailable(getApplicationContext())) {
+            ToastUtil.showToast(getApplicationContext(), "请先检查网络连接情况！");
+        } else {
+            //异步执行
+            SearchTask searchtask = new SearchTask();
+            searchtask.setOnAsyncResponse(this);
+            searchtask.execute(key);
+        }
     }
 
     @Override
     public void onDataReceivedSuccess(List<MagnetUrl> magneturl) {
-        Log.d(Constant.TAG,"onDataReceivedSucess!");
+        Log.d(Constant.TAG, "onDataReceivedSucess!");
         if (magneturl != null) {
-            Log.d(Constant.TAG,"magneturl.size()"+magneturl.size());
             for (int i = 0; i < magneturl.size(); i++) {
                 if (magneturl.get(i) != null) {
                     this.Mmagneturls.add(magneturl.get(i));
@@ -70,7 +74,7 @@ public class ResultShowActivity extends Activity implements AsyncResponse {
 
     @Override
     public void onDataReceivedFailed() {
-        Log.d(Constant.TAG,"onDataReceivedFailed!");
+        Log.d(Constant.TAG, "onDataReceivedFailed!");
         ToastUtil.showToast(getApplicationContext(), "搜索失败啦！");
 
     }
