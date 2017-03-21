@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.superurl.magneturl.R;
@@ -19,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ResultShowActivity extends Activity implements AsyncResponse, AbsListView.OnScrollListener {
+public class ResultShowActivity extends Activity implements AsyncResponse {
     private ListView mListView = null;
     private String content = null;
     private ResultShowAdapter mAdapter;
@@ -77,26 +76,6 @@ public class ResultShowActivity extends Activity implements AsyncResponse, AbsLi
     public void onDataReceivedFailed() {
         Log.d(Constant.TAG, "onDataReceivedFailed!");
         ToastUtil.showToast(getApplicationContext(), "搜索失败啦！");
-
-    }
-
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-        switch (scrollState) {
-            case AbsListView.OnScrollListener.SCROLL_STATE_IDLE://空闲状态
-                Log.d(Constant.TAG, "SCROLL_STATE_IDLE");
-                break;
-            case AbsListView.OnScrollListener.SCROLL_STATE_FLING://滚动状态
-                Log.d(Constant.TAG, "SCROLL_STATE_FLING");
-                break;
-            case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL://触摸后滚动
-                Log.d(Constant.TAG, "SCROLL_STATE_FLING");
-                break;
-        }
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
     }
 }
