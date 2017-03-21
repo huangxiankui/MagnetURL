@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.superurl.magneturl.R;
 import com.superurl.magneturl.common.AsyncResponse;
@@ -13,6 +15,7 @@ import com.superurl.magneturl.common.SearchTask;
 import com.superurl.magneturl.utils.CommonUtils;
 import com.superurl.magneturl.utils.Constant;
 import com.superurl.magneturl.utils.ToastUtil;
+import com.superurl.magneturl.view.ProgressBarEx;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,8 @@ public class ResultShowActivity extends Activity implements AsyncResponse {
     private String content = null;
     private ResultShowAdapter mAdapter;
     private List<MagnetUrl> Mmagneturls = new ArrayList<MagnetUrl>();
+    public ProgressBarEx mProgressBarEx;
+    public TextView mSearchtext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +41,12 @@ public class ResultShowActivity extends Activity implements AsyncResponse {
     private void initData() {
         Intent intent = getIntent();
         this.content = intent.getStringExtra("content");
-        ToastUtil.showToast(getApplicationContext(), "正在玩命搜索中。。。");
     }
 
     public void initUiResource() {
         this.mListView = (ListView) findViewById(R.id.show_list);
+        this.mProgressBarEx = (ProgressBarEx) findViewById(R.id.progress);
+        this.mSearchtext = (TextView) findViewById(R.id.search_text);
     }
 
     private void initList(String key) {
@@ -57,23 +63,25 @@ public class ResultShowActivity extends Activity implements AsyncResponse {
     @Override
     public void onDataReceivedSuccess(List<MagnetUrl> magneturl) {
         Log.d(Constant.TAG, "onDataReceivedSucess!");
+        mProgressBarEx.setVisibility(View.GONE);
+        mSearchtext.setVisibility(View.GONE);
         if (magneturl != null) {
             for (int i = 0; i < magneturl.size(); i++) {
                 if (magneturl.get(i) != null) {
                     this.Mmagneturls.add(magneturl.get(i));
                 }
-
             }
             this.mAdapter = new ResultShowAdapter();
             this.mAdapter.setContext(getBaseContext());
             this.mAdapter.addMsgNetList(this.Mmagneturls);
             this.mListView.setAdapter(this.mAdapter);
         }
-
     }
 
     @Override
     public void onDataReceivedFailed() {
+        mProgressBarEx.setVisibility(View.GONE);
+        mSearchtext.setVisibility(View.GONE);
         Log.d(Constant.TAG, "onDataReceivedFailed!");
         ToastUtil.showToast(getApplicationContext(), "搜索失败啦！");
 

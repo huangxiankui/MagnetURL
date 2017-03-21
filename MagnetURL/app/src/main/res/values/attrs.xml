@@ -1,0 +1,8 @@
+<resources>
+    <declare-styleable name="ProgressBarEx">
+        <attr name="pb_color" format="color"/>
+        <attr name="pb_width" format="dimension"/>
+        <attr name="pb_background" format="color"/>
+    </declare-styleable>
+
+</resources>

@@ -1,9 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<ListView
-    android:id="@+id/show_list"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"></ListView>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.superurl.magneturl.view.ProgressBarEx
+            android:id="@+id/progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="30px" />
+        <TextView
+            android:id="@+id/search_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_below="@+id/progress"
+            android:text="@string/search_ing"
+            />
+
+        <ListView
+            android:id="@+id/show_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></ListView>
+    </RelativeLayout>
 </LinearLayout>
