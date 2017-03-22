@@ -18,7 +18,7 @@ public class MagNetSearch implements ISearch {
     private List<MagnetUrl> mList = null;
 
     @Override
-    public List<MagnetUrl> getSearch(String content) {
+    public List<MagnetUrl> getSearch(String content) throws Exception {
         List<MagnetUrl> list = null;
         mList = new ArrayList<MagnetUrl>();
         for (int i = 1; i < this.pagenum; i++) {
@@ -32,7 +32,7 @@ public class MagNetSearch implements ISearch {
         return mList;
     }
 
-    public List<MagnetUrl> getSearch(String content, int pagenum) {
+    public List<MagnetUrl> getSearch(String content, int pagenum) throws Exception {
         String s = content + "-first-asc-" + pagenum;
         String pageurl = null;
         List<MagnetUrl> mMagnetUrls = new ArrayList<MagnetUrl>();
