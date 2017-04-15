@@ -2,6 +2,8 @@
     <string name="app_name">磁力搜</string>
     <string name="search_button">搜索</string>
     <string name="search_ing">正在搜索...</string>
-    <string name="end">已经没有数据了</string>
+    <string name="load">正在加载...</string>
+    <string name="no_things">啥也没收到...囧</string>
+    <string name="size">大小：</string>
 
 </resources>

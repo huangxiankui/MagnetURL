@@ -3,7 +3,7 @@ package com.superurl.magneturl.view;
 import android.content.Context;
 import android.util.AttributeSet;
 
-public class ThunderButton extends CiliButton {
+public class ThunderButton extends LinkButton {
 
 	public ThunderButton(Context context, AttributeSet attrs) {
 		super(context, attrs);

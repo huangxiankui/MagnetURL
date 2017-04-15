@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.superurl.magneturl.R;
+import com.superurl.magneturl.utils.CommonUtils;
 import com.superurl.magneturl.utils.ToastUtil;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -35,8 +36,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     ToastUtil.showToast(mContext, "请输入搜索内容！");
                     break;
                 }
-                Intent intent  = new Intent(this,ResultShowActivity.class);
-                intent.putExtra("content",content);
+                if (!CommonUtils.isNetworkAvailable(getApplicationContext())) {
+                    ToastUtil.showToast(mContext, "请先检查网络连接情况！");
+                    break;
+                }
+                Intent intent = new Intent(this, ResultShowActivity.class);
+                intent.putExtra("content", content);
                 startActivity(intent);
 
                 break;

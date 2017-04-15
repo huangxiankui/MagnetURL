@@ -1,8 +1,11 @@
 package com.superurl.magneturl.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,18 +37,22 @@ public class ResultShowActivity extends Activity implements AsyncResponse, AbsLi
     private List<MagnetUrl> Mmagneturls = new ArrayList<MagnetUrl>();
     public ProgressBarEx mProgressBarEx;
     public TextView mSearchtext;
-    private boolean mLastRow;
+    private boolean mLastRow = false;
+    private LinearLayout layout_pro;
+    private ProgressBarCircular loading_pro_bar;
+    private TextView end_text;
+    public int currentPage = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resultshow);
-        initData();
+        initKey();
         initUiResource();
-        initList(content);
+        loadMore();
     }
 
-    private void initData() {
+    private void initKey() {
         Intent intent = getIntent();
         this.content = intent.getStringExtra("content");
     }
@@ -54,19 +61,17 @@ public class ResultShowActivity extends Activity implements AsyncResponse, AbsLi
         this.mListView = (ListView) findViewById(R.id.show_list);
         this.mProgressBarEx = (ProgressBarEx) findViewById(R.id.progress);
         this.mSearchtext = (TextView) findViewById(R.id.search_text);
+        LayoutInflater layoutInflater = this.getLayoutInflater();
+        layout_pro = (LinearLayout) layoutInflater.inflate(R.layout.loading_bar, null);
+        loading_pro_bar = (ProgressBarCircular) layout_pro.findViewById(R.id.loading_pro_bar);
+        end_text = (TextView) layout_pro.findViewById(R.id.end);
+        mListView.addFooterView(layout_pro);
         this.mListView.setOnScrollListener(this);
+        this.mAdapter = new ResultShowAdapter();
+        this.mAdapter.setContext(getBaseContext());
+        this.mListView.setAdapter(this.mAdapter);
     }
 
-    private void initList(String key) {
-        if (!CommonUtils.isNetworkAvailable(getApplicationContext())) {
-            ToastUtil.showToast(getApplicationContext(), "请先检查网络连接情况！");
-        } else {
-            //异步执行
-            SearchTask searchtask = new SearchTask();
-            searchtask.setOnAsyncResponse(this);
-            searchtask.execute(key);
-        }
-    }
 
     @Override
     public void onDataReceivedSuccess(List<MagnetUrl> magneturl) {
@@ -74,25 +79,32 @@ public class ResultShowActivity extends Activity implements AsyncResponse, AbsLi
         mProgressBarEx.setVisibility(View.GONE);
         mSearchtext.setVisibility(View.GONE);
         if (magneturl != null) {
-            for (int i = 0; i < magneturl.size(); i++) {
-                if (magneturl.get(i) != null) {
-                    this.Mmagneturls.add(magneturl.get(i));
-                }
-            }
-            this.mAdapter = new ResultShowAdapter();
-            this.mAdapter.setContext(getBaseContext());
-            this.mAdapter.addMsgNetList(this.Mmagneturls);
-            this.mListView.setAdapter(this.mAdapter);
+            this.mAdapter.addMsgNetList(magneturl);
+            mAdapter.notifyDataSetChanged();
+        }
+        else {
+            ToastUtil.showToast(getApplicationContext(),R.string.no_things);
         }
     }
 
     @Override
     public void onDataReceivedFailed() {
+        Log.e(Constant.TAG, "onDataReceivedFailed!");
         mProgressBarEx.setVisibility(View.GONE);
         mSearchtext.setVisibility(View.GONE);
-        Log.d(Constant.TAG, "onDataReceivedFailed!");
-        ToastUtil.showToast(getApplicationContext(), "搜索失败啦！");
+        ToastUtil.showToast(getApplicationContext(), "加载失败啦！");
+        showLoading(Constant.SHOW_HIDE);
+    }
 
+    @Override
+    public void onCancleLoad() {
+        finish();
+    }
+
+    @Override
+    public void onDataReceiving() {
+        mProgressBarEx.setVisibility(View.VISIBLE);
+        mSearchtext.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -100,52 +112,88 @@ public class ResultShowActivity extends Activity implements AsyncResponse, AbsLi
         switch (scrollState) {
             case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
                 Log.d(TAG, "已经停止：SCROLL_STATE_IDLE");
+                if (mLastRow) {
+                    loadMore();
+                }
                 break;
             case AbsListView.OnScrollListener.SCROLL_STATE_FLING:
-                Log.d(TAG, "开始滚动：SCROLL_STATE_FLING");
                 break;
             case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-                Log.d(TAG, "正在滚动：SCROLL_STATE_TOUCH_SCROLL");
                 break;
         }
 
+    }
+
+    Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 0:
+                    Log.e(TAG, "showLoading" + msg.arg1);
+                    if (msg.arg1 != 1) {
+                        showLoading(Constant.SHOW_LOAD);
+                    }
+                    getDatas(content, msg.arg1);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    public void loadMore() {
+        Log.d(TAG, "getCount:" + mAdapter.getCount());
+        int rem = mAdapter.getCount() % 20;
+        if (rem == 0) {
+            currentPage = mAdapter.getCount() / 20;
+        } else {
+            currentPage = mAdapter.getCount() / 20 + 1;
+        }
+        Log.d(TAG, "当前页为：" + currentPage);
+        if (mLastRow) {
+            Log.d(TAG, "到底部了，开始加载！");
+            new Thread() {
+                @Override
+                public void run() {
+                    Message message = mHandler.obtainMessage();
+                    message.what = 0;
+                    message.arg1 = currentPage + 1;
+                    mHandler.sendMessage(message);
+                }
+            }.start();
+        }
+        mLastRow = false;
     }
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        Log.d(TAG, "onScroll!");
-        if (view.getLastVisiblePosition() == (view.getCount() - 1)) {
-            mLastRow = true;
-            showLoading(Constant.SHOW_LOAD);
-            Log.d(TAG, "到底部了！");
-        } else {
-            showLoading(Constant.SHOW_HIDE);
-            mLastRow = false;
-            Log.d(TAG, "没到底部！");
-        }
+        //判断是否滑倒底部
+        mLastRow = (totalItemCount == firstVisibleItem + visibleItemCount);
     }
 
     private void showLoading(int type) {
-        LayoutInflater layoutInflater = this.getLayoutInflater();
-        LinearLayout layout_pro = (LinearLayout) layoutInflater.inflate(R.layout.loading_bar, null);
-        ProgressBarCircular loading_pro_bar = (ProgressBarCircular) layout_pro.findViewById(R.id.loading_pro_bar);
-        TextView end_text = (TextView) layout_pro.findViewById(R.id.end);
         if (type == Constant.SHOW_LOAD) {
-            Log.d(TAG, "showLoading!");
             loading_pro_bar.setVisibility(View.VISIBLE);
             end_text.setVisibility(View.VISIBLE);
 
         } else if (type == Constant.SHOW_HIDE) {
-            Log.d(TAG, "showHide!");
             loading_pro_bar.setVisibility(View.GONE);
             end_text.setVisibility(View.GONE);
-            mListView.removeFooterView(layout_pro);
-
+        } else if (type == Constant.SHOW_LOAD_END) {
+            loading_pro_bar.setVisibility(View.GONE);
+            end_text.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void getDatas(String key, int pagenum) {
+        Log.e(TAG, "pagenum:" + pagenum);
+        SearchTask searchtask = new SearchTask(pagenum);
+        searchtask.setOnAsyncResponse(this);
+        searchtask.execute(key);
     }
 
     private void loadingError(String msg) {
         Log.d(TAG, "LoadingError!");
-
     }
 }

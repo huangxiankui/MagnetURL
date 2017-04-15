@@ -1,6 +1,8 @@
 package com.superurl.magneturl.common;
 
 
+import com.superurl.magneturl.utils.Constant;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -13,32 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MagNetSearch implements ISearch {
-    private final String mHeadUrl = "http://www.btany.com/search/";
-    private final int pagenum = 20;
-    private List<MagnetUrl> mList = null;
-
-    @Override
-    public List<MagnetUrl> getSearch(String content) throws Exception {
-        List<MagnetUrl> list = null;
-        mList = new ArrayList<MagnetUrl>();
-        for (int i = 1; i < this.pagenum; i++) {
-            list = getSearch(content, i);
-            if(list != null) {
-                for (int j = 0; j < list.size(); j++) {
-                    mList.add(list.get(j));
-                }
-            }
-        }
-        return mList;
-    }
-
     public List<MagnetUrl> getSearch(String content, int pagenum) throws Exception {
         String s = content + "-first-asc-" + pagenum;
         String pageurl = null;
         List<MagnetUrl> mMagnetUrls = new ArrayList<MagnetUrl>();
         MagnetUrl magneturl;
         try {
-            pageurl = mHeadUrl + URLEncoder.encode(s, "UTF-8");
+            pageurl = Constant.mHeadUrl + URLEncoder.encode(s, "UTF-8");
             Document doc = null;
             try {
                 doc = Jsoup.connect(pageurl)

@@ -4,5 +4,5 @@ package com.superurl.magneturl.common;
 import java.util.List;
 
 public interface ISearch {
-    public List<MagnetUrl> getSearch(String content) throws Exception;
+    public List<MagnetUrl> getSearch(String content,int pagenum) throws Exception;
 }

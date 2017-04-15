@@ -3,13 +3,18 @@ package com.superurl.magneturl.common;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.superurl.magneturl.utils.CommonUtils;
-import com.superurl.magneturl.utils.ToastUtil;
-
 import java.util.List;
 
 public class SearchTask extends AsyncTask<String, Void, List<MagnetUrl>> {
 
+    public int pagenum;
+
+    public SearchTask() {
+    }
+
+    public SearchTask(int pagenum) {
+        this.pagenum = pagenum;
+    }
 
     @Override
     protected List<MagnetUrl> doInBackground(String... params) {
@@ -17,7 +22,7 @@ public class SearchTask extends AsyncTask<String, Void, List<MagnetUrl>> {
         MagNetSearch search = new MagNetSearch();
         List<MagnetUrl> maglist;
         try {
-            maglist = search.getSearch(content);
+            maglist = search.getSearch(content, pagenum);
         } catch (Exception e) {
             Log.e("SearchTask", "get maglist falied! try again!");
             maglist = null;
@@ -32,15 +37,21 @@ public class SearchTask extends AsyncTask<String, Void, List<MagnetUrl>> {
     }
 
     @Override
+    protected void onCancelled() {
+        asyncResponse.onCancleLoad();
+        super.onCancelled();
+    }
+
+    @Override
     protected void onPostExecute(List<MagnetUrl> magnetUrls) {
         super.onPostExecute(magnetUrls);
         if (magnetUrls != null) {
             //sucess
-            asyncResponse.onDataReceivedSuccess(magnetUrls);//将结果传给回调接口中的函数
+            asyncResponse.onDataReceivedSuccess(magnetUrls);
 
         } else {
-            asyncResponse.onDataReceivedFailed();
             //faliure
+            asyncResponse.onDataReceivedFailed();
         }
     }
 }

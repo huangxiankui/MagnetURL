@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageButton;
 
-public abstract class CiliButton extends ImageButton {
+public abstract class LinkButton extends ImageButton {
     private String link;
 
     public String getLink() {
@@ -15,11 +15,10 @@ public abstract class CiliButton extends ImageButton {
         this.link = link;
     }
 
-    public CiliButton(Context context, AttributeSet attrs) {
+    public LinkButton(Context context, AttributeSet attrs) {
         super(context, attrs);
 
     }
-
     public abstract String linktype();
 
 

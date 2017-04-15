@@ -1,23 +1,23 @@
 package com.superurl.magneturl.ui;
 
+import android.content.ClipboardManager;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.superurl.magneturl.R;
 import com.superurl.magneturl.common.MagnetUrl;
-import com.superurl.magneturl.utils.Constant;
-import com.superurl.magneturl.view.CiliButton;
+import com.superurl.magneturl.view.LinkButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultShowAdapter extends BaseAdapter implements View.OnClickListener {
+public class ResultShowAdapter extends BaseAdapter implements View.OnClickListener,AdapterView.OnItemClickListener{
     private List<MagnetUrl> mList = new ArrayList<MagnetUrl>();
     private Context mContext;
 
@@ -54,8 +54,8 @@ public class ResultShowAdapter extends BaseAdapter implements View.OnClickListen
             view = LayoutInflater.from(mContext).inflate(R.layout.listview_row_item, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.title = (TextView) view.findViewById(R.id.title);
-            viewHolder.magnetbutton = (CiliButton) view.findViewById(R.id.magnet);
-            viewHolder.thunterbutton = (CiliButton) view.findViewById(R.id.thunder);
+            viewHolder.magnetbutton = (LinkButton) view.findViewById(R.id.magnet);
+            viewHolder.thunterbutton = (LinkButton) view.findViewById(R.id.thunder);
             view.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) view.getTag();
@@ -80,13 +80,31 @@ public class ResultShowAdapter extends BaseAdapter implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
+        LinkButton button=(LinkButton)v;
+        String link=button.getLink();
+        ClipboardManager clip = (ClipboardManager)this.mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+        clip.setText(link); // 复制
+        Toast toast=Toast.makeText(this.mContext, "链接已经复制到剪贴版", Toast.LENGTH_SHORT);
+        if(clip.getText()!=null)
+            toast.show();
+        if(button.linktype()=="magnet"){
+            Toast magnetsource=Toast.makeText(this.mContext, "磁力链接不行的化，试试迅雷链接", Toast.LENGTH_SHORT);
+            magnetsource.show();
+        }else{
+            Toast thundersource=Toast.makeText(this.mContext, "迅雷链接不行的化，试试磁力链接", Toast.LENGTH_SHORT);
+            thundersource.show();
+        }
 
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     }
 
     private class ViewHolder {
         TextView title;
-        CiliButton magnetbutton;
-        CiliButton thunterbutton;
+        LinkButton magnetbutton;
+        LinkButton thunterbutton;
     }
 }
 

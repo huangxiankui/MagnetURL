@@ -94,10 +94,10 @@ public class ProgressBarCircular extends RelativeLayout {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (!firstAnimationOver)
-            drawFirstAnimation(canvas);
-        if (cont > 0)
-            drawSecondAnimation(canvas);
+//        if (!firstAnimationOver)
+//            drawFirstAnimation(canvas);
+//        if (cont > 0)
+        drawSecondAnimation(canvas);
         invalidate();
 
     }
