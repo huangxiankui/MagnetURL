@@ -4,6 +4,16 @@ public class MagnetUrl {
     public String title;
     public String magnet;
     public String thunder;
+    public String size;
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
     public String getTitle() {
         return title;
     }

@@ -17,7 +17,7 @@ import com.superurl.magneturl.view.LinkButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultShowAdapter extends BaseAdapter implements View.OnClickListener,AdapterView.OnItemClickListener{
+public class ResultShowAdapter extends BaseAdapter implements View.OnClickListener, AdapterView.OnItemClickListener {
     private List<MagnetUrl> mList = new ArrayList<MagnetUrl>();
     private Context mContext;
 
@@ -54,6 +54,7 @@ public class ResultShowAdapter extends BaseAdapter implements View.OnClickListen
             view = LayoutInflater.from(mContext).inflate(R.layout.listview_row_item, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.title = (TextView) view.findViewById(R.id.title);
+            viewHolder.size = (TextView) view.findViewById(R.id.size);
             viewHolder.magnetbutton = (LinkButton) view.findViewById(R.id.magnet);
             viewHolder.thunterbutton = (LinkButton) view.findViewById(R.id.thunder);
             view.setTag(viewHolder);
@@ -62,10 +63,14 @@ public class ResultShowAdapter extends BaseAdapter implements View.OnClickListen
         }
         MagnetUrl msgurl = mList.get(position);
         String title = msgurl.getTitle();
+        String size = msgurl.getSize();
         String magnetlink = msgurl.getMagnet();
         String thunderlink = msgurl.getThunder();
         if (!title.isEmpty()) {
             viewHolder.title.setText(title);
+        }
+        if (!size.isEmpty()) {
+            viewHolder.size.setText("å¤§å°:" + size);
         }
         if (!magnetlink.isEmpty()) {
             viewHolder.magnetbutton.setLink(magnetlink);
@@ -80,20 +85,20 @@ public class ResultShowAdapter extends BaseAdapter implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        LinkButton button=(LinkButton)v;
-        String link=button.getLink();
-        ClipboardManager clip = (ClipboardManager)this.mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-        clip.setText(link); // ¸´ÖÆ
-        Toast toast=Toast.makeText(this.mContext, "Á´½ÓÒÑ¾­¸´ÖÆµ½¼ôÌù°æ", Toast.LENGTH_SHORT);
-        if(clip.getText()!=null)
+        LinkButton button = (LinkButton) v;
+        String link = button.getLink();
+        ClipboardManager clip = (ClipboardManager) this.mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+        clip.setText(link); // å¤åˆ¶
+        Toast toast = Toast.makeText(this.mContext, "é“¾æ¥å·²ç»å¤åˆ¶æˆåŠŸï¼", Toast.LENGTH_SHORT);
+        if (clip.getText() != null)
             toast.show();
-        if(button.linktype()=="magnet"){
-            Toast magnetsource=Toast.makeText(this.mContext, "´ÅÁ¦Á´½Ó²»ĞĞµÄ»¯£¬ÊÔÊÔÑ¸À×Á´½Ó", Toast.LENGTH_SHORT);
-            magnetsource.show();
-        }else{
-            Toast thundersource=Toast.makeText(this.mContext, "Ñ¸À×Á´½Ó²»ĞĞµÄ»¯£¬ÊÔÊÔ´ÅÁ¦Á´½Ó", Toast.LENGTH_SHORT);
-            thundersource.show();
-        }
+//        if (button.linktype() == "magnet") {
+//            Toast magnetsource = Toast.makeText(this.mContext, "ç£åŠ›é“¾æ¥ä¸è¡Œçš„åŒ–ï¼Œè¯•è¯•è¿…é›·é“¾æ¥", Toast.LENGTH_SHORT);
+//            magnetsource.show();
+//        } else {
+//            Toast thundersource = Toast.makeText(this.mContext, "è¿…é›·é“¾æ¥ä¸è¡Œçš„åŒ–ï¼Œè¯•è¯•ç£åŠ›é“¾æ¥", Toast.LENGTH_SHORT);
+//            thundersource.show();
+//        }
 
     }
 
@@ -103,8 +108,10 @@ public class ResultShowAdapter extends BaseAdapter implements View.OnClickListen
 
     private class ViewHolder {
         TextView title;
+        TextView size;
         LinkButton magnetbutton;
         LinkButton thunterbutton;
+
     }
 }
 

@@ -1,6 +1,8 @@
 package com.superurl.magneturl.common;
 
 
+import android.util.Log;
+
 import com.superurl.magneturl.utils.Constant;
 
 import org.jsoup.Jsoup;
@@ -43,6 +45,8 @@ public class MagNetSearch implements ISearch {
                 String itemmagnet = url.select("div.item-bar").select("a.download[href^=magnet]").attr("href");
                 magneturl.setMagnet(itemmagnet);
                 String itemthender = url.select("div.item-bar").select("a.download[href^=thunder]").attr("href");
+                String size = url.select("div.item-bar").select("span").get(3).text().substring(5);
+                magneturl.setSize(size);
                 magneturl.setThunder(itemthender);
                 mMagnetUrls.add(magneturl);
             }
